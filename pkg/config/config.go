@@ -11,15 +11,14 @@ var Db *sql.DB
 func GetDBInstance() *sql.DB {
 	return Db
 }
-
-func ConnectToDb() {
+func ConnectToDb() error {
 	connectionString := "root:davi@tcp(localhost:3306)/notesAPI_II?charset=utf8&parseTime=True&loc=Local"
 	db, err := sql.Open("mysql", connectionString)
 	if err != nil {
-		log.Fatalf("Error in connecting to db: %v", err)
-		return
+		return err
 	}
 	Db = db
+	return nil
 }
 func CloseConnectionToDb() {
 	if Db != nil {
