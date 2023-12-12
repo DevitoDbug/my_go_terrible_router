@@ -60,7 +60,22 @@ func GetAllTasks(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetTask(w http.ResponseWriter, r *http.Request) {
-
+	ID, err := utility.GetIDFromRequest(r)
+	if err != nil {
+		log.Printf("Error id fetching id from URL: %v", err)
+		return
+	}
+	task, err := models.GetTask(ID)
+	if err != nil {
+		log.Printf("Could not get task from db: %v", err)
+		return
+	}
+	enc := json.NewEncoder(w)
+	err = enc.Encode(task)
+	if err != nil {
+		log.Printf("Could not encode response: %v", err)
+		return
+	}
 }
 func DeleteTask(w http.ResponseWriter, r *http.Request) {
 

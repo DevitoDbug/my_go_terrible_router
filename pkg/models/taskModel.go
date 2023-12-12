@@ -90,7 +90,7 @@ func GetAllTasks() ([]Task, error) {
 	return tasks, nil
 }
 
-func GetTask(id int) (Task, error) {
+func GetTask(id int64) (Task, error) {
 	var task Task
 	getTaskQueryString := `
 		SELECT * FROM tasks WHERE id = ? AND dateDeleted IS NULL 
