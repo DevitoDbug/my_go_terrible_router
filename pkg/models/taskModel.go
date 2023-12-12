@@ -29,7 +29,7 @@ func init() {
 	Db = config.GetDBInstance()
 }
 
-func (t *Task) CreateTask() {
+func (t *Task) CreateTask() error {
 	createTaskQuery := `CREATE TABLE IF NOT EXISTS tasks
     (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -40,13 +40,19 @@ func (t *Task) CreateTask() {
 	dateDeleted TIMESTAMP NULL
     );
 `
-	Db.Exec(createTaskQuery)
+	_, err := Db.Exec(createTaskQuery)
+	if err != nil {
+		return fmt.Errorf("error creating tasks table: %v", err)
+	}
 
 	//populating the db with values
 	insertValuesQuery := `INSERT INTO tasks(description, completed,dateCreated,dateUpdated, dateDeleted)
 	VALUES (?,FALSE,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,NULL)
 `
-	Db.Exec(insertValuesQuery, t.Description)
+	if _, err := Db.Exec(insertValuesQuery, t.Description); err != nil {
+		return fmt.Errorf("error inserting values into tasks table: %v", err)
+	}
+	return nil
 }
 
 func GetTasks() ([]Task, error) {
@@ -54,7 +60,7 @@ func GetTasks() ([]Task, error) {
 		return nil, fmt.Errorf("database connection is nil")
 	}
 
-	getAllTaskQuery := `SELECT * FROM task WHERE dateDeleted IS NULL`
+	getAllTaskQuery := `SELECT * FROM tasks WHERE dateDeleted IS NULL`
 
 	rows, err := Db.Query(getAllTaskQuery)
 	if err != nil {
