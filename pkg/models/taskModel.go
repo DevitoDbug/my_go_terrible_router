@@ -102,3 +102,20 @@ func GetTask(id int) (Task, error) {
 	}
 	return task, nil
 }
+
+func DeleteTask(id int) error {
+	deleteTaskQueryString := `UPDATE tasks SET dateDeleted = current_timestamp WHERE id = ?`
+
+	result, err := Db.Exec(deleteTaskQueryString, id)
+	if err != nil {
+		return err
+	}
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rowsAffected == 0 {
+		return fmt.Errorf("no task found for ID: %d", id)
+	}
+	return nil
+}
