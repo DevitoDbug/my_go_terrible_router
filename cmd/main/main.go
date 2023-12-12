@@ -12,10 +12,10 @@ func main() {
 	var router http.HandlerFunc
 	router = routes.Router
 
+	fmt.Println("Starting sever at port", port, "....")
 	err := http.ListenAndServe(port, router)
 	if err != nil {
 		log.Printf("listen and server error: %v", err)
 		return
 	}
-	fmt.Println("Starting sever at port ", port, "....")
 }

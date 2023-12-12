@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"log"
 	"my_go_terrible_router/pkg/config"
@@ -80,4 +81,24 @@ func GetTasks() ([]Task, error) {
 	}
 
 	return tasks, nil
+}
+
+func GetTask(id int) (Task, error) {
+	var task Task
+	getTaskQueryString := `
+		SELECT * FROM tasks WHERE id = ? AND dateDeleted IS NULL 
+		`
+
+	row := Db.QueryRow(getTaskQueryString, id)
+
+	err := row.Scan(&task.ID, &task.Description, &task.Completed, &task.DateCreated, &task.DateUpdated, &task.DateDeleted)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			// Handle the case when no rows are returned (no matching task found)
+			return task, fmt.Errorf("task not found for ID: %d", id)
+		}
+		log.Printf("Error scanning task row: %v", err)
+		return task, err
+	}
+	return task, nil
 }
