@@ -12,12 +12,12 @@ import (
 var Db *sql.DB
 
 type Task struct {
-	ID          int64     `json:"id"`
-	Description string    `json:"description"`
-	Completed   bool      `json:"completed"`
-	DateCreated time.Time `json:"dateCreated"`
-	DateUpdated time.Time `json:"dateUpdated"`
-	DateDeleted time.Time `json:"dateDeleted"`
+	ID          int64        `json:"id"`
+	Description string       `json:"description"`
+	Completed   bool         `json:"completed"`
+	DateCreated time.Time    `json:"dateCreated"`
+	DateUpdated time.Time    `json:"dateUpdated"`
+	DateDeleted sql.NullTime `json:"dateDeleted"`
 }
 
 func init() {
@@ -64,9 +64,10 @@ func GetAllTasks() ([]Task, error) {
 
 	rows, err := Db.Query(getAllTaskQuery)
 	if err != nil {
+		log.Printf("Error executing query: %v", err)
 		return nil, err
 	}
-	rows.Close()
+	defer rows.Close()
 
 	//slice to store the returned rows
 	var tasks []Task

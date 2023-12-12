@@ -29,7 +29,11 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	// Encode the task directly to the response writer
 	enc := json.NewEncoder(w)
-	err = enc.Encode(task)
+	err = enc.Encode(struct {
+		Description string `json:"description"`
+		Completed   bool   `json:"completed"`
+	}{Description: task.Description,
+		Completed: task.Completed})
 	if err != nil {
 		log.Printf("Error encoding task: %v", err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)

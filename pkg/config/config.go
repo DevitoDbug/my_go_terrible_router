@@ -12,7 +12,7 @@ func GetDBInstance() *sql.DB {
 	return Db
 }
 func ConnectToDb() error {
-	connectionString := "root:davi@tcp(localhost:3306)/notesAPI_II?charset=utf8&parseTime=True&loc=Local"
+	connectionString := "root:j1751502021@tcp(localhost:3306)/notesAPI_II?charset=utf8&parseTime=True&loc=Local"
 	db, err := sql.Open("mysql", connectionString)
 	if err != nil {
 		return err
