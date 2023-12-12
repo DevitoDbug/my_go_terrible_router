@@ -35,7 +35,6 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
-
 }
 
 func GetAllTasks(w http.ResponseWriter, r *http.Request) {
