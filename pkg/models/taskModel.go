@@ -55,7 +55,7 @@ func (t *Task) CreateTask() error {
 	return nil
 }
 
-func GetTasks() ([]Task, error) {
+func GetAllTasks() ([]Task, error) {
 	if Db == nil {
 		return nil, fmt.Errorf("database connection is nil")
 	}
