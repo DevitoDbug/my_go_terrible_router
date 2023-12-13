@@ -126,3 +126,25 @@ func DeleteTask(id int64) error {
 	}
 	return nil
 }
+
+func UpdateTasks(id int64, task Task) (Task, error) {
+	updateTaskQueryString := `
+		UPDATE tasks 
+		SET description = ?, completed = ?, dateUpdated = CURRENT_TIMESTAMP
+		WHERE id = ? AND dateDeleted IS NULL
+	`
+
+	_, err := Db.Exec(updateTaskQueryString, task.Description, task.Completed, id)
+	if err != nil {
+		return task, err
+	}
+
+	// Fetch the updated task using the LAST_INSERT_ID() function
+	var updatedTask Task
+	err = Db.QueryRow("SELECT id, description, completed, dateCreated, dateUpdated, dateDeleted FROM tasks WHERE id = ? AND dateDeleted IS NULL", id).
+		Scan(&updatedTask.ID, &updatedTask.Description, &updatedTask.Completed, &updatedTask.DateCreated, &updatedTask.DateUpdated, &updatedTask.DateDeleted)
+	if err != nil {
+		return task, err
+	}
+	return updatedTask, nil
+}

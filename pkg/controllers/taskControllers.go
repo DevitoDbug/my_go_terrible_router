@@ -73,6 +73,9 @@ func GetTask(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
+	// Set Content-Type header
+	w.Header().Set("Content-Type", "application/json")
+
 	enc := json.NewEncoder(w)
 	err = enc.Encode(task)
 	if err != nil {
@@ -105,5 +108,39 @@ func DeleteTask(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateTask(w http.ResponseWriter, r *http.Request) {
+	ID, err := utility.GetIDFromRequest(r)
+	if err != nil {
+		log.Printf("Error fetching ID from URL: %v", err)
+		http.Error(w, "Bad Request", http.StatusBadRequest)
+		return
+	}
 
+	task := &models.Task{}
+	// Read the request body
+	err = utility.ReadBody(r, task)
+	if err != nil {
+		log.Printf("Error reading request body: %v", err)
+		http.Error(w, "Bad Request", http.StatusBadRequest)
+		return
+	}
+
+	fmt.Println(*task)
+	updatedTask, err := models.UpdateTasks(ID, *task)
+	fmt.Println(updatedTask)
+	if err != nil {
+		log.Printf("Error updating task with the given task ID: %v", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	// Set Content-Type header
+	w.Header().Set("Content-Type", "application/json")
+
+	enc := json.NewEncoder(w)
+	err = enc.Encode(updatedTask)
+	if err != nil {
+		log.Printf("Could not encode response: %v", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
 }
