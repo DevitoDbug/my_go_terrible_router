@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"my_go_terrible_router/pkg/models"
 	"my_go_terrible_router/pkg/utility"
@@ -63,23 +64,46 @@ func GetTask(w http.ResponseWriter, r *http.Request) {
 	ID, err := utility.GetIDFromRequest(r)
 	if err != nil {
 		log.Printf("Error id fetching id from URL: %v", err)
+		http.Error(w, "Bad request ", http.StatusBadRequest)
 		return
 	}
 	task, err := models.GetTask(ID)
 	if err != nil {
 		log.Printf("Could not get task from db: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 	enc := json.NewEncoder(w)
 	err = enc.Encode(task)
 	if err != nil {
 		log.Printf("Could not encode response: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 }
-func DeleteTask(w http.ResponseWriter, r *http.Request) {
 
+func DeleteTask(w http.ResponseWriter, r *http.Request) {
+	ID, err := utility.GetIDFromRequest(r)
+	if err != nil {
+		log.Printf("Error id fetching id from URL: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	err = models.DeleteTask(ID)
+	if err != nil {
+		log.Printf("Could not delete task from db: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	_, err = fmt.Fprintf(w, "Deleted task of the id: %v", ID)
+	if err != nil {
+		log.Printf("Could not write respose: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
 }
+
 func UpdateTask(w http.ResponseWriter, r *http.Request) {
 
 }

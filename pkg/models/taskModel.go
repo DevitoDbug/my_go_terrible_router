@@ -110,7 +110,7 @@ func GetTask(id int64) (Task, error) {
 	return task, nil
 }
 
-func DeleteTask(id int) error {
+func DeleteTask(id int64) error {
 	deleteTaskQueryString := `UPDATE tasks SET dateDeleted = current_timestamp WHERE id = ?`
 
 	result, err := Db.Exec(deleteTaskQueryString, id)
