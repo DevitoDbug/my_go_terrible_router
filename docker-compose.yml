@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      DATABASE_URL: root:j1751502021@tcp(database:3306)/notesAPI_II?charset=utf8&parseTime=True&loc=Local
+      DATABASE_URL: "root:j1751502021@tcp(database:3306)/notesAPI_II?charset=utf8&parseTime=True&loc=Local"
     ports:
       - "8080:8080"
     depends_on:
@@ -20,3 +20,7 @@ services:
       MYSQL_DATABASE: notesAPI_II
       MYSQL_USER: davi
       MYSQL_PASSWORD: j1751502021
+    volumes:
+      - mysql_data:/var/lib/mysql
+volumes:
+  mysql_data: {}
