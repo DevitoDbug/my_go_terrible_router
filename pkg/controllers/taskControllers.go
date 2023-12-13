@@ -124,7 +124,6 @@ func UpdateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(*task)
 	updatedTask, err := models.UpdateTasks(ID, *task)
 	fmt.Println(updatedTask)
 	if err != nil {
